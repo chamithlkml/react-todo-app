@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+cd /app/frontend && npm install && npx babel src --out-dir build --presets react-app/prod
+ln -s /app/frontend /var/www/todosapp.com/html
+chown -R www-data:www-data /var/www
+chmod -R 755 /var/www
+nginx
+nginx -s reload
+
+# cd /app && RAILS_ENV=$RAILS_ENV bundle exec rails db:migrate
+# cd /app && nohup bundle exec rails s -b '0.0.0.0' > log/development.log 2>&1 &
+# tail -f /app/log/development.log
+tail -f /dev/null
