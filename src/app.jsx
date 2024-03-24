@@ -32,7 +32,7 @@ class Todo extends React.Component {
     return <div className="todo">
       <span className="py-1 bg-gray-200 border-slate-50">
         <input type="checkbox" checked={this.state.done} onClick={this.handleClick}/>
-        <input type="text" value={this.state.text} onChange={this.handleChange} />
+        <input type="text" value={this.state.text} onChange={this.handleChange} className={this.state.done ? 'line-through' : ''} />
       </span>
     </div>;
   }
