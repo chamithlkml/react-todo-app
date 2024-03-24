@@ -59,7 +59,7 @@ var Todo = function (_React$Component) {
           "span",
           { className: "py-1 bg-gray-200 border-slate-50" },
           React.createElement("input", { type: "checkbox", checked: this.state.done, onClick: this.handleClick }),
-          React.createElement("input", { type: "text", value: this.state.text, onChange: this.handleChange })
+          React.createElement("input", { type: "text", value: this.state.text, onChange: this.handleChange, className: this.state.done ? 'line-through' : '' })
         )
       );
     }
