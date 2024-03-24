@@ -15,6 +15,7 @@ var Todo = function (_React$Component) {
     var _this = _possibleConstructorReturn(this, (Todo.__proto__ || Object.getPrototypeOf(Todo)).call(this, props));
 
     _this.state = {
+      _id: props.id,
       text: props.text,
       done: props.done
     };
@@ -25,7 +26,7 @@ var Todo = function (_React$Component) {
   }
 
   _createClass(Todo, [{
-    key: "handleClick",
+    key: 'handleClick',
     value: function handleClick(event) {
       this.setState(function (state) {
         return {
@@ -36,7 +37,7 @@ var Todo = function (_React$Component) {
       });
     }
   }, {
-    key: "handleChange",
+    key: 'handleChange',
     value: function handleChange(event) {
       this.setState(function (state) {
         return {
@@ -45,21 +46,64 @@ var Todo = function (_React$Component) {
       });
     }
   }, {
-    key: "handleSubmit",
+    key: 'handleSubmit',
     value: function handleSubmit(event) {
-      console.log('Submitted');
+      var _this2 = this;
+
+      var id = this.props.id || this.state._id;
+
+      if (id == '' || id == undefined) {
+        fetch('http://localhost:3000/todos', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            text: this.state.text,
+            done: this.state.done
+          })
+        }).then(function (response) {
+          return response.json();
+        }).then(function (data) {
+          _this2.setState(function (state) {
+            return {
+              _id: data.id
+            };
+          });
+        });
+      } else {
+        fetch('http://localhost:3000/todos/' + this.props.id, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            text: this.state.text,
+            done: this.state.done
+          })
+        }).then(function (response) {
+          return response.json();
+        }).then(function (data) {
+          _this2.setState(function (state) {
+            return {
+              text: data.text,
+              done: data.done
+            };
+          });
+        });
+      }
     }
   }, {
-    key: "render",
+    key: 'render',
     value: function render() {
       return React.createElement(
-        "div",
-        { className: "todo" },
+        'div',
+        { className: 'todo' },
         React.createElement(
-          "span",
-          { className: "py-1 bg-gray-200 border-slate-50" },
-          React.createElement("input", { type: "checkbox", checked: this.state.done, onClick: this.handleClick }),
-          React.createElement("input", { type: "text", value: this.state.text, onChange: this.handleChange, className: this.state.done ? 'line-through' : '' })
+          'span',
+          { className: 'py-1 bg-gray-200 border-slate-50' },
+          React.createElement('input', { type: 'checkbox', checked: this.state.done, onClick: this.handleClick }),
+          React.createElement('input', { type: 'text', value: this.state.text, onChange: this.handleChange, className: this.state.done ? 'line-through' : '', onBlur: this.handleSubmit })
         )
       );
     }
@@ -74,48 +118,63 @@ var TodoList = function (_React$Component2) {
   function TodoList(props) {
     _classCallCheck(this, TodoList);
 
-    var _this2 = _possibleConstructorReturn(this, (TodoList.__proto__ || Object.getPrototypeOf(TodoList)).call(this, props));
+    var _this3 = _possibleConstructorReturn(this, (TodoList.__proto__ || Object.getPrototypeOf(TodoList)).call(this, props));
 
-    _this2.state = {
-      todos: [{ _id: 1, text: 'Learn React', done: false }, { _id: 2, text: 'Learn JSX', done: true }, { _id: 3, text: 'Build an App', done: false }]
+    _this3.state = {
+      todos: []
     };
-    _this2.addTodo = _this2.addTodo.bind(_this2);
-    return _this2;
+    _this3.addTodo = _this3.addTodo.bind(_this3);
+    return _this3;
   }
 
   _createClass(TodoList, [{
-    key: "addTodo",
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      var _this4 = this;
+
+      fetch('http://localhost:3000/todos/').then(function (response) {
+        return response.json();
+      }).then(function (data) {
+        _this4.setState(function (state) {
+          return {
+            todos: data
+          };
+        });
+      });
+    }
+  }, {
+    key: 'addTodo',
     value: function addTodo(event) {
       event.preventDefault();
       var todos = this.state.todos;
-      todos.push({ _id: todos.length + 1, text: '', done: false });
+      todos.push({ id: '', text: '', done: false });
       this.setState({ todos: todos });
     }
   }, {
-    key: "render",
+    key: 'render',
     value: function render() {
       var todoList = this.state.todos.map(function (todo) {
-        return React.createElement(Todo, { key: todo._id, text: todo.text, done: todo.done });
+        return React.createElement(Todo, { id: todo.id, key: todo.id, text: todo.text, done: todo.done });
       });
       return React.createElement(
         React.Fragment,
         null,
         React.createElement(
-          "div",
-          { className: "flex justify-center items-center h-screen" },
+          'div',
+          { className: 'flex justify-center items-center h-screen' },
           React.createElement(
-            "div",
-            { className: "bg-gray-200 p-8" },
+            'div',
+            { className: 'bg-gray-200 p-8' },
             React.createElement(
-              "h1",
-              { className: "my-2 font-bold" },
-              "Todo List"
+              'h1',
+              { className: 'my-2 font-bold' },
+              'Todo List'
             ),
             todoList,
             React.createElement(
-              "a",
-              { href: "#", className: "font-bold mt-6 px-4 h-4 rounded btn-blue bg-blue-500 text-white hover:bg-blue-700", onClick: this.addTodo },
-              "Add Todo"
+              'a',
+              { href: '#', className: 'font-bold mt-6 px-4 h-4 rounded btn-blue bg-blue-500 text-white hover:bg-blue-700', onClick: this.addTodo },
+              'Add Todo'
             )
           )
         )
