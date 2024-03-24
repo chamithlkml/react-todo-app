@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+cd /app/client && npm install && npm run build
+ln -s /app/client/dist /var/www/namefeeder.com/html
+chown -R www-data:www-data /var/www
+chmod -R 755 /var/www
+nginx
+nginx -s reload
+# Check if the server is already running
+if [ -f /app/tmp/pids/server.pid ]; then
+  echo "Server is already running. Removing PID file and restarting..."
+  # kill the process with the pid in the file
+  kill -9 $(cat /app/tmp/pids/server.pid)
+  rm /app/tmp/pids/server.pid
+fi
+
+cd /app && RAILS_ENV=production bundle exec rails db:migrate
+cd /app && nohup bundle exec puma -C config/puma.rb > log/puma.log 2>&1 &
+tail -f /app/log/puma.log
