@@ -2,6 +2,7 @@ class Todo extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      _id: props.id,
       text: props.text,
       done: props.done
     };
@@ -25,14 +26,49 @@ class Todo extends React.Component {
   }
 
   handleSubmit(event){
-    console.log('Submitted');
+    let id = this.props.id || this.state._id;
+
+    if(id == '' || id == undefined){
+      fetch('http://localhost:3000/todos', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          text: this.state.text,
+          done: this.state.done
+        })
+      }).then(response => response.json())
+        .then(data => {
+          this.setState(state => ({
+            _id: data.id
+          }));
+        });
+    }else{
+      fetch('http://localhost:3000/todos/' + this.props.id, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          text: this.state.text,
+          done: this.state.done
+        })
+      }).then(response => response.json())
+        .then(data => {
+          this.setState(state => ({
+            text: data.text,
+            done: data.done
+          }))
+        });
+    }
   }
 
   render() {
     return <div className="todo">
       <span className="py-1 bg-gray-200 border-slate-50">
         <input type="checkbox" checked={this.state.done} onClick={this.handleClick}/>
-        <input type="text" value={this.state.text} onChange={this.handleChange} className={this.state.done ? 'line-through' : ''} />
+        <input type="text" value={this.state.text} onChange={this.handleChange} className={this.state.done ? 'line-through' : ''} onBlur={this.handleSubmit} />
       </span>
     </div>;
   }
@@ -42,25 +78,31 @@ class TodoList extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      todos: [
-        { _id: 1, text: 'Learn React', done: false },
-        { _id: 2, text: 'Learn JSX', done: true },
-        { _id: 3, text: 'Build an App', done: false }
-      ]
+      todos: []
     };
     this.addTodo = this.addTodo.bind(this);
+  }
+
+  componentDidMount() {
+    fetch('http://localhost:3000/todos/')
+      .then(response => response.json())
+      .then(data => {
+        this.setState(state => ({
+          todos: data
+        }))
+      });
   }
 
   addTodo(event){
     event.preventDefault();
     const todos = this.state.todos;
-    todos.push({ _id: todos.length + 1, text: '', done: false });
+    todos.push({ id: '', text: '', done: false });
     this.setState({ todos: todos });
   }
 
   render() {
     const todoList = this.state.todos.map(todo => {
-      return <Todo key={todo._id} text={todo.text} done={todo.done} />
+      return <Todo id={todo.id} key={todo.id} text={todo.text} done={todo.done} />
     })
     return <React.Fragment>
       <div className="flex justify-center items-center h-screen">
