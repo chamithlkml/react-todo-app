@@ -57,7 +57,7 @@ var Todo = function (_React$Component) {
         { className: "todo" },
         React.createElement(
           "span",
-          null,
+          { className: "py-1 bg-gray-200 border-slate-50" },
           React.createElement("input", { type: "checkbox", checked: this.state.done, onClick: this.handleClick }),
           React.createElement("input", { type: "text", value: this.state.text, onChange: this.handleChange })
         )
@@ -79,10 +79,19 @@ var TodoList = function (_React$Component2) {
     _this2.state = {
       todos: [{ _id: 1, text: 'Learn React', done: false }, { _id: 2, text: 'Learn JSX', done: true }, { _id: 3, text: 'Build an App', done: false }]
     };
+    _this2.addTodo = _this2.addTodo.bind(_this2);
     return _this2;
   }
 
   _createClass(TodoList, [{
+    key: "addTodo",
+    value: function addTodo(event) {
+      event.preventDefault();
+      var todos = this.state.todos;
+      todos.push({ _id: todos.length + 1, text: '', done: false });
+      this.setState({ todos: todos });
+    }
+  }, {
     key: "render",
     value: function render() {
       var todoList = this.state.todos.map(function (todo) {
@@ -92,11 +101,24 @@ var TodoList = function (_React$Component2) {
         React.Fragment,
         null,
         React.createElement(
-          "h1",
-          null,
-          "Todo List"
-        ),
-        todoList
+          "div",
+          { className: "flex justify-center items-center h-screen" },
+          React.createElement(
+            "div",
+            { className: "bg-gray-200 p-8" },
+            React.createElement(
+              "h1",
+              { className: "my-2 font-bold" },
+              "Todo List"
+            ),
+            todoList,
+            React.createElement(
+              "a",
+              { href: "#", className: "font-bold mt-6 px-4 h-4 rounded btn-blue bg-blue-500 text-white hover:bg-blue-700", onClick: this.addTodo },
+              "Add Todo"
+            )
+          )
+        )
       );
     }
   }]);
