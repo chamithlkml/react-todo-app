@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 cd /app/frontend && npm install && npx babel src --out-dir build --presets react-app/prod
 # Dev Mode
-# cd /app/frontend && npm install && npx babel --watch src --out-dir . --presets react-app/prod
+# cd /app/frontend && npm install && npx babel --watch src --out-dir build --presets react-app/prod
 ln -s /app/frontend /var/www/todosapp.com/html
 chown -R www-data:www-data /var/www
 chmod -R 755 /var/www
