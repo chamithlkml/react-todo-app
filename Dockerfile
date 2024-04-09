@@ -13,11 +13,6 @@ RUN apt-get update && apt-get install -y nodejs && apt-get clean && rm -rf /var/
 RUN node --version
 RUN npm --version
 
-# RUN curl -sL https://deb.nodesource.com/setup_20.x | bash -
-# RUN apt-get update -qq && apt-get install -y nodejs npm vim
-# RUN gem install bundler && gem install rails && npm install -g yarn
-# RUN npm install -g @vue/cli
-
 # Install Nginx
 RUN apt-get update && apt-get install -y nginx vim && apt-get clean && rm -rf /var/lib/apt/lists/*
 RUN npm install -g npm@10.5.0
