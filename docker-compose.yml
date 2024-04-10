@@ -15,9 +15,9 @@ services:
     networks:
       - todo-app-net
     volumes:
-            - '.:/app'
+      - '.:/app'
     depends_on:
-        - pgsql
+      - pgsql
   pgsql:
     container_name: pgsql
     image: postgres:14.3-alpine
@@ -25,6 +25,8 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: whatever
       POSTGRES_HOST_AUTH_METHOD: trust
+    volumes:
+      - pgdata:/var/lib/postgresql/data
     ports:
       - 5432:5432
     networks:
@@ -32,3 +34,6 @@ services:
 networks:
     todo-app-net:
         driver: bridge
+volumes:
+    pgdata:
+      driver: local

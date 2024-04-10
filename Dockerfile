@@ -23,7 +23,7 @@ WORKDIR /app
 COPY . .
 RUN cd /app && bundle install
 
-RUN mkdir -p /var/www/todosapp.com/html
+RUN mkdir -p /var/www/todosapp.com
 
 RUN rm -f /etc/nginx/sites-enabled/default
 RUN cp /app/docker/nginx.conf /etc/nginx/sites-enabled/todosapp.conf
